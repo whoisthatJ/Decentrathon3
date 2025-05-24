@@ -559,6 +559,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a582519344aa40b4495799a39303c21e, type: 3}
   m_PrefabInstance: {fileID: 21349879}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1120849919 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: a582519344aa40b4495799a39303c21e, type: 3}
+  m_PrefabInstance: {fileID: 21349879}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1120849921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,7 +576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e22a4d7111a374c87d0e04bc5b87c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Animator>k__BackingField: {fileID: 0}
+  <Animator>k__BackingField: {fileID: 1120849919}
 --- !u!1 &1207166521
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +588,7 @@ GameObject:
   - component: {fileID: 1207166523}
   - component: {fileID: 1207166522}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: DuelManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
