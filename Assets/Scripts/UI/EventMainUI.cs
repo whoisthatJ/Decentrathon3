@@ -21,6 +21,12 @@ public class EventMainUI : MonoBehaviour
     [SerializeField] private int gold;
     [SerializeField] private int hat;
     private int goldMax = 100;
+
+    [SerializeField] AudioSource audioSource;
+
+    [SerializeField] AudioSource audioSource2;
+    [SerializeField] AudioClip[] coinSounds;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -44,6 +50,15 @@ public class EventMainUI : MonoBehaviour
             rect.DOAnchorPosY(-300f, 1f).SetEase(Ease.InQuad).SetDelay(i*Random.Range(0.2f, 0.25f)).OnStart(()=> { image.color = new Color(1, 1, 1, 1); }).OnComplete(() => {                
                 goldRect.DOPunchScale(Vector3.one * 1.01f, 0.05f).OnComplete(() => { goldRect.transform.localScale = Vector3.one; });
                 goldTxt.text = $"{tGold + id + 1}";
+                if (!audioSource.isPlaying) {
+                    audioSource.clip = coinSounds[Random.Range(0, coinSounds.Length)];
+                    audioSource.Play();
+                }
+                else if (!audioSource2.isPlaying){
+                    audioSource2.clip = coinSounds[Random.Range(0, coinSounds.Length)];
+                    audioSource2.Play();
+
+                }
                 if (id == pieces - 1) {
                     goldTxt.text = gold.ToString();
                     UpdateCart();

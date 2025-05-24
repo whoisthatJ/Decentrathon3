@@ -21,6 +21,14 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     [field: SerializeField] RectTransform Aim { get; set; }
     [field: SerializeField] RectTransform RedDot { get; set; }
     [field: SerializeField] Animator Animator { get; set; }
+    
+    [SerializeField] AudioSource bellAudioSource;
+    [SerializeField] AudioSource playerAudioSource;
+    [SerializeField] AudioSource enemyAudioSource;
+    [SerializeField] AudioClip [] revolverShots;
+    [SerializeField] AudioClip[] deathClips;
+
+
     DuelEnemyController enemyController;
 
     private bool dead = false;
@@ -37,8 +45,10 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     void StartCounter()
     {
         Sequence countdownSequence = DOTween.Sequence();
-
-        for (int i = Timer; i >= 0; i--)
+        Counter.text = "";
+        countdownSequence.AppendInterval(Random.Range(2.5f, 3.5f));
+        
+        /*for (int i = Timer; i > 0; i--)
         {
             int valueToShow = i;
             countdownSequence.AppendCallback(() =>
@@ -46,13 +56,14 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
                 Counter.text = valueToShow.ToString();
             });
             countdownSequence.AppendInterval(1f);
-        }
+        }*/
 
         countdownSequence.OnComplete(() =>
         {
             Counter.text = "GO";
             ShootButton.interactable = true;
             enemyController.StartDuel();
+            bellAudioSource.Play();
         });
     }
 
@@ -61,26 +72,34 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         if (dead) return;
         Animator.SetTrigger("Shoot");
         aim.Kill();
-        Aim.gameObject.SetActive(false);   
+        Aim.gameObject.SetActive(false);
+        playerAudioSource.clip = revolverShots[Random.Range(0, revolverShots.Length)];
+        playerAudioSource.Play();
+
         if (RedDot.localScale.x > 0.6f)
         {
             if (RedDot.localScale.x > 0.75f && HatCount <= 1) GetHat();
             GetHat();
             enemyController.Kill();
-            if(HatCount >= 3)
+            
+            enemyAudioSource.clip = deathClips[Random.Range(0, deathClips.Length)];
+            enemyAudioSource.Play();
+            if (HatCount >= 3)
             {
                WinPanel.gameObject.SetActive(true);
                 return;
             }
-                NexRoundPanel.gameObject.SetActive(true);
+            NexRoundPanel.gameObject.SetActive(true);
         }
+        
     }
 
-     void Hold()
+    void Hold()
     {
+        Camera.main.transform.DOMove(new Vector3(1.87f, 1.09f, -5.82f), 0.4f);
         Animator.SetTrigger("HoldGun");
         HasGun = true;
-        Counter.text = "3";
+        Counter.text = "";
         CounterPanel.gameObject.SetActive(false);
     }
 
@@ -110,6 +129,10 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         Aim.gameObject.SetActive(false );
         dead = true;
         LoosePanel.gameObject.SetActive(true);
+        enemyAudioSource.clip = revolverShots[Random.Range(0, revolverShots.Length)];
+        enemyAudioSource.Play();
+        playerAudioSource.clip = deathClips[Random.Range(0, deathClips.Length)];
+        playerAudioSource.Play();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -120,6 +143,7 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
     public void ReLoad()
     {
+        Camera.main.transform.DOMove(new Vector3(2.21f, 1.16f, -6.24f), 0.2f);
         CounterPanel.gameObject.SetActive(true);
         Animator.SetTrigger("ReStart");
         HasGun = false;
