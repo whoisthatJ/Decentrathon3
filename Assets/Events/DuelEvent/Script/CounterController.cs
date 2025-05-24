@@ -126,7 +126,8 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         Aim.gameObject.SetActive(false);
         StartCoroutine(CounterRestart());
         ShootButton.interactable = false;
-        Animator.ResetTrigger("ReStart");
+        dead = false;
+        //Animator.ResetTrigger("ReStart");
     }
 
     IEnumerator CounterRestart()

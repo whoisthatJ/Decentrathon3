@@ -1877,7 +1877,7 @@ MonoBehaviour:
   <LoosePanel>k__BackingField: {fileID: 386550182}
   <NexRoundPanel>k__BackingField: {fileID: 1744641567}
   <WinPanel>k__BackingField: {fileID: 870105375}
-  <HatPanel>k__BackingField: {fileID: 0}
+  <HatPanel>k__BackingField: {fileID: 415069296}
 --- !u!4 &1207166523
 Transform:
   m_ObjectHideFlags: 0

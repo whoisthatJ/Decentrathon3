@@ -36,6 +36,7 @@ public class DuelEnemyController : MonoBehaviour
 
     public void ReLoad()
     {
+        StopAllCoroutines();
         Animator.SetTrigger("ReStart");
     }
 
