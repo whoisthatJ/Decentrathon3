@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,6 +7,14 @@ using UnityEngine.UI;
 
 public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    [field: SerializeField] GameObject HatPanel { get; set; }
+    [field: SerializeField] GameObject CounterPanel { get; set; }
+    [field: SerializeField] GameObject NexRoundPanel { get; set; }
+    [field: SerializeField] GameObject WinPanel { get; set; }
+    [field: SerializeField] GameObject LoosePanel { get; set; }
+
+    public int HatCount = 0;
+
     [field: SerializeField] TMP_Text Counter { get; set; }
     [field: SerializeField] Button ShootButton { get; set; }
     private int Timer = 3;
@@ -22,16 +31,21 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     void Start()
     {
         enemyController = FindObjectOfType<DuelEnemyController>();
+        StartCounter();
+    }
+
+    void StartCounter()
+    {
         Sequence countdownSequence = DOTween.Sequence();
 
         for (int i = Timer; i >= 0; i--)
         {
-            int valueToShow = i; 
+            int valueToShow = i;
             countdownSequence.AppendCallback(() =>
             {
                 Counter.text = valueToShow.ToString();
             });
-            countdownSequence.AppendInterval(1f); 
+            countdownSequence.AppendInterval(1f);
         }
 
         countdownSequence.OnComplete(() =>
@@ -50,16 +64,24 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         Aim.gameObject.SetActive(false);   
         if (RedDot.localScale.x > 0.6f)
         {
-            
+            if (RedDot.localScale.x > 0.75f && HatCount <= 1) GetHat();
+            GetHat();
             enemyController.Kill();
+            if(HatCount >= 3)
+            {
+               WinPanel.gameObject.SetActive(true);
+                return;
+            }
+                NexRoundPanel.gameObject.SetActive(true);
         }
-
     }
 
      void Hold()
     {
         Animator.SetTrigger("HoldGun");
         HasGun = true;
+        Counter.text = "3";
+        CounterPanel.gameObject.SetActive(false);
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -70,10 +92,10 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
         Aim.anchoredPosition = new Vector2(Aim.anchoredPosition.x, 0f);
 
-        aim = Aim.DOAnchorPosY(800f, 4f).SetEase(Ease.InOutCubic);
+        aim = Aim.DOAnchorPosY(800f, 3.5f).SetEase(Ease.InOutCubic);
 
-        RedDot.DOScale(Vector3.zero, 1f).OnComplete(() => {
-            RedDot.DOScale(Vector3.one, 1.5f).OnComplete(() => {
+        RedDot.DOScale(Vector3.zero, 1.25f).OnComplete(() => {
+            RedDot.DOScale(Vector3.one, 1.4f).OnComplete(() => {
                 RedDot.DOScale(Vector3.zero, 0f).SetEase(Ease.InCirc);
             });
         });
@@ -82,10 +104,12 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     public void Death()
     {
         Animator.SetTrigger("Death");
+        
         ShootButton.interactable = false;
         aim.Kill();
         Aim.gameObject.SetActive(false );
         dead = true;
+        LoosePanel.gameObject.SetActive(true);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -96,8 +120,24 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
     public void ReLoad()
     {
+        CounterPanel.gameObject.SetActive(true);
         Animator.SetTrigger("ReStart");
         HasGun = false;
         Aim.gameObject.SetActive(false);
+        StartCoroutine(CounterRestart());
+        ShootButton.interactable = false;
+        Animator.ResetTrigger("ReStart");
+    }
+
+    IEnumerator CounterRestart()
+    {
+        yield return new WaitForSeconds(2);
+        StartCounter();
+    }
+
+    public void GetHat()
+    {
+        HatPanel.transform.GetChild(HatCount).gameObject.GetComponent<Image>().color = Color.brown;
+        HatCount++;
     }
 }

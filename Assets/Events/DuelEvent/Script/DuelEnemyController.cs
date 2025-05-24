@@ -33,6 +33,7 @@ public class DuelEnemyController : MonoBehaviour
         PlayerController.Death();
     }
 
+
     public void ReLoad()
     {
         Animator.SetTrigger("ReStart");
