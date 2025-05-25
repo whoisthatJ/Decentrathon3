@@ -109,6 +109,7 @@ public class BarEventManager : MonoBehaviour
 
     void Fill()
     {
+        PlayerAnimator.ResetTrigger("Drink");
         IsDrinking = false;
         DrinkCount++;
         PlayerCounter.text = DrinkCount.ToString();
@@ -128,7 +129,7 @@ public class BarEventManager : MonoBehaviour
             EnemyDrinkCount++;
             EnemyCounter.text = EnemyDrinkCount.ToString();
             EnemyAnimator.SetTrigger("Refill");
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
         }
     }
     public void Restart()
