@@ -26,9 +26,15 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("DuelScene");
     }
     private int goldToTranfer;
+    private int hatToTranfer;
     public void LoadMainAfterShooter(int gold) {
         goldToTranfer = gold;
         SceneManager.sceneLoaded += SetPlayerAfterShooter;
+        SceneManager.LoadScene("MainScene");
+    }
+    public void LoadMainAfterDuel(int hat) {
+        hatToTranfer = hat;
+        SceneManager.sceneLoaded += SetPlayerAfterDuel;
         SceneManager.LoadScene("MainScene");
     }
     private void SetPlayerAfterShooter(Scene s, LoadSceneMode a) {
@@ -39,10 +45,19 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= SetPlayerAfterShooter;
         StartCoroutine(WaitOpenWindow());
     }
+    private void SetPlayerAfterDuel(Scene s, LoadSceneMode a) {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        eventUI = FindFirstObjectByType<EventMainUI>();
+        player.transform.position = new Vector3(-12.15f, 0, 43.72f); 
+        player.transform.eulerAngles = new Vector3(0, 9.709f, 0);
+        SceneManager.sceneLoaded -= SetPlayerAfterDuel;
+        StartCoroutine(WaitOpenWindow());
+    }
     private IEnumerator WaitOpenWindow() {
-        yield return new WaitForSeconds (1f);
+        yield return new WaitForSeconds (0.3f);
 
         eventUI.OpenWindow();
         eventUI.GoldEarned(goldToTranfer);
+        eventUI.HatsEarned(hatToTranfer);
     }
 }

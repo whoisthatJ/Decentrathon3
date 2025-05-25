@@ -32,13 +32,17 @@ public class EventMainUI : MonoBehaviour
     void Start()
     {
         backBtn.onClick.AddListener(() => { window.SetActive(false); });
+        gold = PlayerPrefs.GetInt("Gold", 0);
+        goldTxt.text = gold.ToString();
+        hat = PlayerPrefs.GetInt("Hat", 0);
+        hatText.text = hat.ToString();
         //GoldEarned(10);
     }
-
+    
     public void GoldEarned(int pieces) {
         int tGold = gold;
         gold += pieces;
-
+        PlayerPrefs.SetInt("Gold", gold);
         for (int i = 0; i < pieces; i++) {
             GameObject piece = Instantiate(goldPiecesPrefab, goldPiecesParent);
             Image image = piece.GetComponent<Image>();
@@ -69,6 +73,19 @@ public class EventMainUI : MonoBehaviour
             });
         }
         
+    }
+    public void HatsEarned(int hats) {
+        int tHat = hat;
+        hat += hats;
+        PlayerPrefs.SetInt("Hat", hat);
+        for (int i = 0; i < hats; i++) {
+            int id = i;
+            hatRect.DOPunchScale(Vector3.one * 1.01f, 0.1f).SetDelay((i+1)*0.5f).OnComplete(() => { 
+                hatRect.transform.localScale = Vector3.one;
+                hatText.text = $"{tHat + id + 1}";
+            });
+                        
+        }
     }
     private void UpdateCart() {
         if (!cart50.activeSelf && gold > goldMax / 2) {

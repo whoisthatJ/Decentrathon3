@@ -30,12 +30,13 @@ public class DuelManager : MonoBehaviour
 
     public void ReloadMiniGame()
     {
-        Reload();
+        GameManager.Instance.LoadMainAfterDuel(PlayerController.HatCount);
+        /*Reload();
         PlayerController.HatCount = 0;
         for (int i = 0; i < 3; i++)
         {
             HatPanel.transform.GetChild(i).gameObject.GetComponent<Image>().color = Color.white;
-        }
+        }*/
     }
 
 
