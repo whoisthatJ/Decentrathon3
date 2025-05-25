@@ -13,11 +13,13 @@ public class ShooterManager : MonoBehaviour
     [SerializeField] private GameObject RewardPanel;
     [SerializeField] private TMP_Text RewardScore;
     [SerializeField] private Animator Animator;
-
+    [SerializeField] private TextMeshProUGUI goldScoreTxt;
+    [SerializeField] private AudioSource playerAS;
+    [SerializeField] private AudioClip[] shotClips; 
 
     private int ScoreIndex;
     private int ShootCount;
-
+    private int gold;
 
     private float maxDistance = 100f;
 
@@ -35,10 +37,15 @@ public class ShooterManager : MonoBehaviour
         ShootCount++;
         ScoreIndex += (int)(RedDot.localScale.x * 25f);
         Score.text = ScoreIndex.ToString();
-        if (ShootCount == 4)
+        playerAS.clip = shotClips[Random.Range(0, shotClips.Length)];
+        playerAS.Play();
+        if (ShootCount >= 4)
         {
             RewardPanel.SetActive(true);
             RewardScore.text = Score.text;
+            gold = ScoreIndex / 10 + (ScoreIndex % 10 > 0 ? 1 : 0);
+            goldScoreTxt.text = $"{gold} x";
+            ShootButton.interactable = false;
             return;
         }
         Vector3 targetRotation = Player.localEulerAngles + new Vector3(0, 9.5f, 0);
@@ -70,6 +77,7 @@ public class ShooterManager : MonoBehaviour
 
     public void Restart()
     {
+        GameManager.Instance.LoadMainAfterShooter(gold);
         ScoreIndex = 0;
         ShootCount = 0;
         Player.DOLocalRotate(new Vector3(0, -100.5f, 0), 0.1f).SetEase(Ease.InOutSine);

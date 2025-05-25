@@ -277,6 +277,7 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 //_animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
+            //Debug.Log(_animationBlend);
         }
 
         private void JumpAndGravity()

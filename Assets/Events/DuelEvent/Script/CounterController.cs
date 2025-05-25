@@ -14,8 +14,12 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     [field: SerializeField] GameObject LoosePanel { get; set; }
 
     public int HatCount = 0;
+    [SerializeField] private int tries = 0;
 
     [field: SerializeField] TMP_Text Counter { get; set; }
+    [field: SerializeField] TMP_Text RoundText { get; set; }
+
+    [field: SerializeField] TMP_Text HatsText { get; set; }
     [field: SerializeField] Button ShootButton { get; set; }
     private int Timer = 3;
     [field: SerializeField] RectTransform Aim { get; set; }
@@ -61,6 +65,7 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         countdownSequence.OnComplete(() =>
         {
             Counter.text = "GO";
+            tries++;
             ShootButton.interactable = true;
             enemyController.StartDuel();
             bellAudioSource.Play();
@@ -75,21 +80,29 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         Aim.gameObject.SetActive(false);
         playerAudioSource.clip = revolverShots[Random.Range(0, revolverShots.Length)];
         playerAudioSource.Play();
-
-        if (RedDot.localScale.x > 0.6f)
+        Debug.Log(RedDot.localScale.x);
+        if (RedDot.localScale.x > 0.45f)
         {
-            if (RedDot.localScale.x > 0.75f && HatCount <= 1) GetHat();
+            if (RedDot.localScale.x > 0.7f)
+                GetHat();
+            if (RedDot.localScale.x > 0.81f)
+                GetHat();
             GetHat();
             enemyController.Kill();
             
             enemyAudioSource.clip = deathClips[Random.Range(0, deathClips.Length)];
             enemyAudioSource.Play();
-            if (HatCount >= 3)
-            {
-               WinPanel.gameObject.SetActive(true);
+            if (HatCount >= 3 || (tries >= 3 && HatCount >= 2)) {
+                WinPanel.gameObject.SetActive(true);
+                HatsText.text = "+" + HatCount.ToString();
+                return;
+            }
+            else if (tries >= 3) { 
+                LoosePanel.gameObject.SetActive(true);
                 return;
             }
             NexRoundPanel.gameObject.SetActive(true);
+            RoundText.gameObject.SetActive(true);
         }
         
     }
@@ -128,11 +141,17 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
         aim.Kill();
         Aim.gameObject.SetActive(false );
         dead = true;
-        LoosePanel.gameObject.SetActive(true);
         enemyAudioSource.clip = revolverShots[Random.Range(0, revolverShots.Length)];
         enemyAudioSource.Play();
         playerAudioSource.clip = deathClips[Random.Range(0, deathClips.Length)];
         playerAudioSource.Play();
+        if (tries >= 3) {
+            LoosePanel.gameObject.SetActive(true);
+        }
+        else {
+            RoundText.gameObject.SetActive(false);
+            NexRoundPanel.gameObject.SetActive(true);
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -143,7 +162,7 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
     public void ReLoad()
     {
-        Camera.main.transform.DOMove(new Vector3(2.21f, 1.16f, -6.24f), 0.2f);
+        Camera.main.transform.DOMove(new Vector3(2.21f, 1.16f, -6.73f), 0.2f);
         CounterPanel.gameObject.SetActive(true);
         Animator.SetTrigger("ReStart");
         HasGun = false;
@@ -162,6 +181,8 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
 
     public void GetHat()
     {
+        if (HatCount >= 3)
+            return;
         HatPanel.transform.GetChild(HatCount).gameObject.GetComponent<Image>().color = Color.brown;
         HatCount++;
     }
