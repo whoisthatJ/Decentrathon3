@@ -5,7 +5,8 @@ using TMPro;
 
 public class EventMainUI : MonoBehaviour
 {
-
+    [SerializeField] GameObject window;
+    [SerializeField] Button backBtn;
     [SerializeField] Transform goldPiecesParent;
     [SerializeField] Sprite [] goldPiecesSprites;
     [SerializeField] GameObject goldPiecesPrefab;
@@ -30,6 +31,7 @@ public class EventMainUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        backBtn.onClick.AddListener(() => { window.SetActive(false); });
         //GoldEarned(10);
     }
 
@@ -84,5 +86,8 @@ public class EventMainUI : MonoBehaviour
             cartFull.transform.localScale = Vector3.one * 0.5f;
             cartFull.transform.DOScale(Vector3.one, 0.5f);
         }
+    }
+    public void OpenWindow() { 
+        window.SetActive(true);
     }
 }
