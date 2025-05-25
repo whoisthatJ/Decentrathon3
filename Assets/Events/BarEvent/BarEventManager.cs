@@ -149,6 +149,6 @@ public class BarEventManager : MonoBehaviour
 
     public void ExitGame()
     {
-        SceneManager.LoadScene("MainScene");
+        GameManager.Instance.LoadMainAfterBar(DrinkCount * 2);
     }
 }

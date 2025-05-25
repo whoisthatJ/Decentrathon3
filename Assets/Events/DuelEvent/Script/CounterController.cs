@@ -31,7 +31,9 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     [SerializeField] AudioSource enemyAudioSource;
     [SerializeField] AudioClip [] revolverShots;
     [SerializeField] AudioClip[] deathClips;
-
+    public GameObject tutorial;
+    public Button tutorialBtn;
+    public GameObject[] tutorials;
 
     DuelEnemyController enemyController;
 
@@ -39,13 +41,31 @@ public class CounterController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     private Tween aim;
 
     private bool HasGun = false;
-
+    int tutId;
     void Start()
     {
         enemyController = FindObjectOfType<DuelEnemyController>();
-        StartCounter();
-    }
+        
+        if (PlayerPrefs.GetInt("duelTut", 0)==0) { 
+            tutorial.SetActive(true);
+        }
+        else { 
+            StartCounter(); 
+        }
+        tutorialBtn.onClick.AddListener(() => {
 
+            tutorials[tutId].SetActive(false);
+            tutId++;
+            if (tutId < tutorials.Length - 1)
+                tutorials[tutId].SetActive(true);
+            else {
+                tutorial.SetActive(false);
+                PlayerPrefs.SetInt("duelTut", 1);
+                StartCounter();
+            }
+        });
+    }
+    
     void StartCounter()
     {
         Sequence countdownSequence = DOTween.Sequence();
